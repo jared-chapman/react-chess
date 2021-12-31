@@ -76,7 +76,6 @@ class Square extends React.Component {
             r: this.props.r,
             l: this.props.l,
             p: this.props.p,
-            //pieceName: this.props.piece.name,
             visible: false
         }
     }
@@ -86,7 +85,6 @@ class Square extends React.Component {
             <button 
                 style = {{background: "#227F32" }}
                 className="square" 
-
                 >
             {this.state.p.name}
             </button>
@@ -102,8 +100,6 @@ class Square extends React.Component {
             );   
     }
   }}
-
-
 
     // Create a simple array of row/col values
     let squarePositions = [];
@@ -132,11 +128,8 @@ class Square extends React.Component {
     }
     squaresToBuild = test;
     
-
-
    class Board extends React.Component {
-    
-    
+
     render() {
         return (
                 <div>
