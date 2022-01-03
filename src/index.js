@@ -196,7 +196,7 @@ class Square extends React.Component {
     let squarePositions = [];
     for (let i=7; i>-1; i--){
         for (let j=0; j<8; j++){
-            squarePositions.push([i, j, (i+j+1)%2]);
+            squarePositions.push([i, j, (i+j)%2]);
         }
     }
 
@@ -216,7 +216,7 @@ class Square extends React.Component {
     let squaresToBuild = squarePositions.map(buildSquares);
     let tempSquaresToBuild = [];
     while (squaresToBuild.length > 0){
-        tempSquaresToBuild.push(squaresToBuild.splice(0,8));
+        tempSquaresToBuild.unshift(squaresToBuild.splice(0,8));
     }
     squaresToBuild = tempSquaresToBuild;
 
