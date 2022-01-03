@@ -133,10 +133,10 @@ const kingW = {
 
 const startingPiecePositions = [[rookB, knightB, bishopB, queenB, kingB, bishopB, knightB, rookB],
                                 [pawnB, pawnB,   pawnB,   pawnB,  pawnB, pawnB,   pawnB,   pawnB],
-                                ["",     "",     "",     "",    "",   "",     "",     ""],
-                                ["",     "",     "",     "",    "",   "",     "",     ""],
-                                ["",     "",     "",     "",    "",   "",     "",     ""],
-                                ["",     "",     "",     "",    "",   "",     "",     ""],
+                                [NaN,     NaN,     NaN,     NaN,    NaN,   NaN,     NaN,     NaN],
+                                [NaN,     NaN,     NaN,     NaN,    NaN,   NaN,     NaN,     NaN],
+                                [NaN,     NaN,     NaN,     NaN,    NaN,   NaN,     NaN,     NaN],
+                                [NaN,     NaN,     NaN,     NaN,    NaN,   NaN,     NaN,     NaN],
                                 [pawnW, pawnW,   pawnW,   pawnW,  pawnW, pawnW,   pawnW,   pawnW],
                                 [rookW, knightW, bishopW, queenW, kingW, bishopW, knightW, rookW]];
 
@@ -144,6 +144,9 @@ const startingPiecePositions = [[rookB, knightB, bishopB, queenB, kingB, bishopB
 class Square extends React.Component {
     constructor(props){
         super(props);
+        
+        
+        
 
         this.state = {
             c: this.props.c,
@@ -157,16 +160,17 @@ class Square extends React.Component {
       if (this.state.l) {
         return (
             <button 
-                style = {{background: "#227F32" }}
-                className="square" 
-                onClick = {() => {
-                  // Trying to move a piece
-                  // console.log("click");
-                  // console.log(this.state.r);
-                  // this.state.r += 1;
-                  // this.state.c += 1;
-                }}
-                >
+              style = {{background: "#227F32" }}
+              className="square" 
+              key = {this.props.keyName}
+              onClick = {() => {
+                console.log("keyValue: " + this.props.keyName)
+                // Trying to move a piece
+                // console.log("click");
+                //let piece = this.state.p;
+                //squaresToBuild[this.state.r+1][this.state.c+1].state.p = piece;
+              }}
+              >
             {<img src={this.state.p.image} ></img>}
             
             </button>
@@ -176,14 +180,19 @@ class Square extends React.Component {
             <button
                 style = {{background: "#D5C798" }}
                 className="square"
+                key = {this.props.keyName}
+                onClick = {() => {
+                  console.log("keyValue: " + this.props.keyName)
+                }}
                 >
-                {<img src={this.state.p.image} ></img>}
+                {<img src={this.state.p.image}></img>}
             </button>
             );   
     }
   }}
 
     // Create a simple array of row/col values
+    // This is what is mapped over
     let squarePositions = [];
     for (let i=7; i>-1; i--){
         for (let j=0; j<8; j++){
@@ -194,45 +203,52 @@ class Square extends React.Component {
     // Function to build square objects
     // This will be called in the map function below
     let buildSquares = (x) => {
-        let squareToPush   = {};
-        squareToPush.row   = x[0];
-        squareToPush.col   = x[1];
-        squareToPush.light = x[2];
-        squareToPush.piece = startingPiecePositions[x[0]][x[1]];
+        let squareToPush     = {};
+        squareToPush.row     = x[0]+1;
+        squareToPush.col     = x[1];
+        squareToPush.light   = x[2];
+        squareToPush.piece   = startingPiecePositions[x[0]][x[1]];
+        squareToPush.keyName = letters[x[1]] + (x[0]+1).toString();
         return squareToPush;
     }
     
     // Create single array of objects
     let squaresToBuild = squarePositions.map(buildSquares);
-    let test = [];
+    let tempSquaresToBuild = [];
     while (squaresToBuild.length > 0){
-        test.push(squaresToBuild.splice(0,8));
+        tempSquaresToBuild.push(squaresToBuild.splice(0,8));
     }
-    squaresToBuild = test;
+    squaresToBuild = tempSquaresToBuild;
+
+  let squareComponents = [];
     
    class Board extends React.Component {
 
+    
+
     render() {
-        return (
-                <div>
-                    {squaresToBuild.map((x) => {
-                        return (
-                            <div>
-                                {x.map((y) => {
-                                    return (
-                                        <Square
-                                            c = {y.col}
-                                            r = {y.row}
-                                            l = {y.light}
-                                            p = {y.piece}
-                                        />
-                                    )
-                                })}
-                            </div>
-                     )})}
-                </div>
-            )
-        }
+      return (
+        <div key = {1}>
+          {squaresToBuild.map((x) => {
+            return (
+              <div>
+                {x.map((y) => {
+                  squareComponents.push()
+                  return (
+                    <Square
+                      c = {y.col}
+                      r = {y.row}
+                      l = {y.light}
+                      p = {y.piece}
+                      keyName = {y.keyName}
+                    />
+                  )
+                })}
+              </div>
+            )})}
+        </div>
+          )
+      }
     }
 
     
