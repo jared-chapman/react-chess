@@ -158,10 +158,10 @@ class Square extends React.Component {
         }
     }
     render() {
-      if (this.state.l) {
+      //if (this.state.l) {
         return (
             <button 
-              style = {{background: "#227F32" }}
+              style = {this.state.l ? {background: "#227F32" } : {background: "#D5C798" }}
               className="square" 
               //key = {this.props.keyName}
               onClick = {() => {
@@ -173,23 +173,9 @@ class Square extends React.Component {
               }}
               >
             {<img src={this.state.p.image} ></img>}
-            
             </button>
         ); 
-    } else {
-        return (
-            <button
-                style = {{background: "#D5C798" }}
-                className="square"
-                //key = {this.props.keyName}
-                onClick = {() => {
-                  console.log(this.state.squareName);
-                }}
-                >
-                {<img src={this.state.p.image}></img>}
-            </button>
-            );   
-    }
+    
   }}
 
     // Create a simple array of row/col values
@@ -205,7 +191,7 @@ class Square extends React.Component {
     // This will be called in the map function below
     let buildSquares = (x) => {
         let squareToPush     = {};
-        squareToPush.row     = 8-x[0]+1;
+        squareToPush.row     = 9-x[0];
         squareToPush.col     = x[1];
         squareToPush.light   = x[2];
         squareToPush.piece   = startingPiecePositions[x[0]][x[1]];
@@ -217,7 +203,7 @@ class Square extends React.Component {
     let squaresToBuild = squarePositions.map(buildSquares);
     let tempSquaresToBuild = [];
     while (squaresToBuild.length > 0){
-        tempSquaresToBuild.unshift(squaresToBuild.splice(0,8));
+        tempSquaresToBuild.push(squaresToBuild.splice(0,8));
     }
     squaresToBuild = tempSquaresToBuild;
 
