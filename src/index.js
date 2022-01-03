@@ -153,6 +153,7 @@ class Square extends React.Component {
             r: this.props.r,
             l: this.props.l,
             p: this.props.p,
+            squareName: this.props.squareName,
             visible: false
         }
     }
@@ -162,9 +163,9 @@ class Square extends React.Component {
             <button 
               style = {{background: "#227F32" }}
               className="square" 
-              key = {this.props.keyName}
+              //key = {this.props.keyName}
               onClick = {() => {
-                console.log("keyValue: " + this.props.keyName)
+                console.log(this.state.squareName);
                 // Trying to move a piece
                 // console.log("click");
                 //let piece = this.state.p;
@@ -180,9 +181,9 @@ class Square extends React.Component {
             <button
                 style = {{background: "#D5C798" }}
                 className="square"
-                key = {this.props.keyName}
+                //key = {this.props.keyName}
                 onClick = {() => {
-                  console.log("keyValue: " + this.props.keyName)
+                  console.log(this.state.squareName);
                 }}
                 >
                 {<img src={this.state.p.image}></img>}
@@ -194,7 +195,7 @@ class Square extends React.Component {
     // Create a simple array of row/col values
     // This is what is mapped over
     let squarePositions = [];
-    for (let i=7; i>-1; i--){
+    for (let i=0; i<8; i++){
         for (let j=0; j<8; j++){
             squarePositions.push([i, j, (i+j)%2]);
         }
@@ -204,11 +205,11 @@ class Square extends React.Component {
     // This will be called in the map function below
     let buildSquares = (x) => {
         let squareToPush     = {};
-        squareToPush.row     = x[0]+1;
+        squareToPush.row     = 8-x[0]+1;
         squareToPush.col     = x[1];
         squareToPush.light   = x[2];
         squareToPush.piece   = startingPiecePositions[x[0]][x[1]];
-        squareToPush.keyName = letters[x[1]] + (x[0]+1).toString();
+        squareToPush.keyName = letters[x[1]] + (8-x[0]).toString();
         return squareToPush;
     }
     
@@ -240,7 +241,8 @@ class Square extends React.Component {
                       r = {y.row}
                       l = {y.light}
                       p = {y.piece}
-                      keyName = {y.keyName}
+                      key = {y.keyName}
+                      squareName = {y.keyName}
                     />
                   )
                 })}
