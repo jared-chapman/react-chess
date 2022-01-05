@@ -223,10 +223,10 @@ class Square extends React.Component {
       squaresToBuild[3][5].piece = piece;
       console.log("This should move the " + squaresToBuild[0][2].piece.name + " on " + squaresToBuild[0][2].key + " to " + squaresToBuild[3][5].key)
       
-        this.forceUpdate();
-      // this.setState({
-      //   squaresArray: squaresToBuild
-      // })
+        //this.forceUpdate();
+      this.setState({
+        squaresArray: squaresToBuild
+      })
     }
 
     getOriginFromCoordinate = (coordinate) => {
