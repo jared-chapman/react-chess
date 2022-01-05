@@ -160,8 +160,10 @@ class Square extends React.Component {
               className="square" 
               key = {this.props.squareName}
               onClick = {() => {
-                console.log(this.props.squareName);
-                this.props.updateSquare(this.props.squareName, "D5");
+                const name = this.props.squareName
+                console.log(name);
+                //console.log(getOriginFromCoordinate(name));
+                this.props.updateSquare("A8", this.props.squareName);
               }}
               >
             {<img src={this.props.p.image}></img>}
@@ -203,7 +205,19 @@ class Square extends React.Component {
     console.log(squaresToBuild)
 
 
-
+    let getSquareObjectFromCoordinate = (coordinate) => {
+      let toReturn = "Fail"
+      console.log("Looking for " + coordinate)
+      squaresToBuild.map((x, xIndex) => {
+        x.map((y, yIndex) => {
+          if (y.key == coordinate) {
+            //console.log("A: " + xIndex + " B: " + yIndex)
+            toReturn = squaresToBuild[xIndex][yIndex];
+          }
+        })
+      })
+      return toReturn;
+    }
   
     
    class Board extends React.Component {
@@ -214,26 +228,25 @@ class Square extends React.Component {
     
     // Move a piece from origin to destination
     updateSquare = (origin, destination) => {
-      //const originIndex = getOriginFromCoordinate(origin);
-      //const destinationIndex = getOriginFromCoordinate(destination);
-      const originIndex = [1][1];
-      const destinationIndex = [3][3];
-      const piece = squaresToBuild[0][0].piece;
-      squaresToBuild[0][0].piece = empty;
-      squaresToBuild[3][5].piece = piece;
-      console.log("This should move the " + squaresToBuild[0][2].piece.name + " on " + squaresToBuild[0][2].key + " to " + squaresToBuild[3][5].key)
+      const originSquare      = getSquareObjectFromCoordinate(origin);
+      const destinationSquare = getSquareObjectFromCoordinate(destination);
+      console.log("This should move the " + originSquare.piece.name + " on " + originSquare.key + " to " + destinationSquare.key)
+      const piece = originSquare.piece;
+      originSquare.piece = empty;
+      destinationSquare.piece = piece;
       
-        //this.forceUpdate();
+      
       this.setState({
         squaresArray: squaresToBuild
       })
     }
 
-    getOriginFromCoordinate = (coordinate) => {
-      // Return the position of a square in the squareComponents array with a given coordinate
-    }
+    
+
+    
 
     render() {
+      
 
       return (
         <div>
@@ -247,6 +260,7 @@ class Square extends React.Component {
                       r = {y.row}
                       l = {y.light}
                       p = {y.piece}
+                      key = {y.key}
                       squareName = {y.key}
                       updateSquare = {this.updateSquare}
                     />
