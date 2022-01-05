@@ -145,9 +145,6 @@ class Square extends React.Component {
     constructor(props){
         super(props);
         
-        
-        
-
         this.state = {
             c: this.props.c,
             r: this.props.r,
@@ -169,9 +166,10 @@ class Square extends React.Component {
                 // Trying to move a piece
                 // console.log("click");
                 let piece = this.state.p;
-                console.log("row: " + this.props.r)
-                console.log("col: " + this.props.c)
-                console.log("Key: " + this.props.squareName)
+                
+                // console.log("row: " + this.props.r)
+                // console.log("col: " + this.props.c)
+                // console.log("Key: " + this.props.squareName)
               }}
               >
             {<img src={this.state.p.image} ></img>}
@@ -197,7 +195,7 @@ class Square extends React.Component {
         squareToPush.col     = x[1]+1;
         squareToPush.light   = x[2];
         squareToPush.piece   = startingPiecePositions[x[0]][x[1]];
-        squareToPush.keyName = letters[x[1]] + (8-x[0]).toString();
+        squareToPush.key = letters[x[1]] + (8-x[0]).toString();
         return squareToPush;
     }
     
@@ -213,37 +211,48 @@ class Square extends React.Component {
   
     
    class Board extends React.Component {
-
+    
     
 
     render() {
       let squareComponents = [];
+      function updateSquare(origin, destination) {
+        //const originIndex = getOriginFromCoordinate(origin);
+        //const destinationIndex = getOriginFromCoordinate(destination);
+        const originIndex = 15;
+        const destinationIndex = 55;
+        const piece = squareComponents[originIndex].piece;
+        squareComponents[originIndex].piece = NaN;
+        squareComponents[destinationIndex.piece] = piece;
+        
+      }
 
-
+      function getOriginFromCoordinate(coordinate){
+        // Return the position of a square in the squareComponents array with a given coordinate
+      }
 
       
       return (
-        <div key = {1}>
+        <div>
           {squaresToBuild.map((x) => {
             return (
               <div>
                 {x.map((y) => {
-                  squareComponents.push()
                   return (
                     <Square
                       c = {y.col}
                       r = {y.row}
                       l = {y.light}
                       p = {y.piece}
-                      key = {y.keyName}
-                      squareName = {y.keyName}
+                      key = {y.key}
+                      squareName = {y.key}
                     />
                   )
                 })}
               </div>
             )})}
-        </div>
-          )
+          </div>
+        )
       }
     }
 
@@ -255,10 +264,6 @@ class Square extends React.Component {
         <div className="game">
           <div className="game-board">
             <Board />
-          </div>
-          <div className="game-info">
-            <div>{/* status */}</div>
-            <ol>{/* TODO */}</ol>
           </div>
         </div>
       );
