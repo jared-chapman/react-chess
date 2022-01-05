@@ -168,8 +168,10 @@ class Square extends React.Component {
                 console.log(this.state.squareName);
                 // Trying to move a piece
                 // console.log("click");
-                //let piece = this.state.p;
-                //squaresToBuild[this.state.r+1][this.state.c+1].state.p = piece;
+                let piece = this.state.p;
+                console.log("row: " + this.props.r)
+                console.log("col: " + this.props.c)
+                console.log("Key: " + this.props.squareName)
               }}
               >
             {<img src={this.state.p.image} ></img>}
@@ -191,8 +193,8 @@ class Square extends React.Component {
     // This will be called in the map function below
     let buildSquares = (x) => {
         let squareToPush     = {};
-        squareToPush.row     = 9-x[0];
-        squareToPush.col     = x[1];
+        squareToPush.row     = 8-x[0];
+        squareToPush.col     = x[1]+1;
         squareToPush.light   = x[2];
         squareToPush.piece   = startingPiecePositions[x[0]][x[1]];
         squareToPush.keyName = letters[x[1]] + (8-x[0]).toString();
@@ -206,14 +208,20 @@ class Square extends React.Component {
         tempSquaresToBuild.push(squaresToBuild.splice(0,8));
     }
     squaresToBuild = tempSquaresToBuild;
+    console.log(squaresToBuild)
 
-  let squareComponents = [];
+  
     
    class Board extends React.Component {
 
     
 
     render() {
+      let squareComponents = [];
+
+
+
+      
       return (
         <div key = {1}>
           {squaresToBuild.map((x) => {
