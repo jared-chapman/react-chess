@@ -164,25 +164,21 @@ class Square extends React.Component {
                 const name = this.props.squareName
                 console.log(name);
                 
-                // If selecting, set selecting to false and set selected to the clicked square's piece
+                // If "selecting", set selecting to false and set selected to the clicked square's piece
                 if (this.props.getSelecting()) {
-                  this.props.setSelectedSquareByCoordinate(name)
+                  this.props.setSelectedSquare(name)
                   this.props.setSelecting(false)
                 } else {
                 // If not selecting, update the clicked square with the selected piece, set selected piece to null, and set selecting to true
                   this.props.clearSelectedSquare()
                   this.props.setSelecting(true)
-                  console.log("updateSquare(" + this.props.getSelectedSquare().key + ", " + name + ");") 
-                  
                   this.props.updateSquare(this.props.getSelectedSquare().key, name); 
                 }
-
               }}
               >
             {<img src={this.props.p.image}></img>}
             </button>
         ); 
-    
   }}
 
     // Create a simple array of row/col values
@@ -208,23 +204,20 @@ class Square extends React.Component {
     
     // Map over squarePositions and feed in buildSquares
     // To create an array of square objects (NOT components)
-    // Then create 2D array of objects
+    // Then create 2D array of objects (for ease of component rendering)
     let squaresToBuild = squarePositions.map(buildSquares);
     let tempSquaresToBuild = [];
     while (squaresToBuild.length > 0){
         tempSquaresToBuild.push(squaresToBuild.splice(0,8));
     }
     squaresToBuild = tempSquaresToBuild;
-    console.log(squaresToBuild)
 
-
+    // Provide coordinate in "B4" format and return corresponding square
     let getSquareObjectFromCoordinate = (coordinate) => {
       let toReturn = "Fail"
-      //console.log("Looking for " + coordinate)
       squaresToBuild.map((x, xIndex) => {
         x.map((y, yIndex) => {
           if (y.key == coordinate) {
-            //console.log("A: " + xIndex + " B: " + yIndex)
             toReturn = squaresToBuild[xIndex][yIndex];
           }
         })
@@ -247,7 +240,6 @@ class Square extends React.Component {
     updateSquare = (origin, destination) => {
       const originSquare      = getSquareObjectFromCoordinate(origin);
       const destinationSquare = getSquareObjectFromCoordinate(destination);
-      console.log("This should move the " + originSquare.piece.name + " on " + originSquare.key + " to " + destinationSquare.key)
       const piece = originSquare.piece;
       originSquare.piece = empty;
       destinationSquare.piece = piece; 
@@ -255,7 +247,6 @@ class Square extends React.Component {
         squaresArray: squaresToBuild
       })
     }
-
 
     setSelecting = (value) => {
       this.setState({
@@ -268,7 +259,7 @@ class Square extends React.Component {
 
 
     
-    setSelectedSquareByCoordinate = (coordinate) => {
+    setSelectedSquare = (coordinate) => {
       console.log("Setting square to: " + getSquareObjectFromCoordinate(coordinate))
       this.setState({
         selectedSquare: getSquareObjectFromCoordinate(coordinate)
@@ -284,16 +275,13 @@ class Square extends React.Component {
       return this.state.selectedSquare
     }
 
-    
-
     render() {
       
-
       return (
         <div>
           <ol key = {"selecting"}>{this.state.selecting ? "Selecting" : "Moving"}</ol>
-          <ol key = {"selectedPiece"}>{this.state.selectedSquare ? "Selected Piece: " + this.state.selectedSquare.piece.name : "No Piece Selected"}</ol>
-          <ol key = {"selectedCoordinate"}>{this.state.selectedSquare ? "Selected Coordinate: " + this.state.selectedSquare.key : "No Piece Selected"}</ol>
+          <ol key = {"selectedPiece"}>{this.state.selectedSquare ? this.state.selectedSquare.piece.name + " at " + this.state.selectedSquare.key : "No Piece Selected"}</ol>
+          
           {this.state.squaresArray.map((x) => {
             return (
               <div>
@@ -308,7 +296,7 @@ class Square extends React.Component {
                       squareName = {y.key}
                       updateSquare = {this.updateSquare}
                       clearSelectedSquare = {this.clearSelectedSquare}
-                      setSelectedSquareByCoordinate = {this.setSelectedSquareByCoordinate}
+                      setSelectedSquare = {this.setSelectedSquare}
                       getSelectedSquare = {this.getSelectedSquare}
                       setSelecting = {this.setSelecting}
                       getSelecting = {this.getSelecting}
