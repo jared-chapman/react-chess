@@ -212,7 +212,7 @@ class Square extends React.Component {
     }
     squaresToBuild = tempSquaresToBuild;
 
-    // Provide coordinate in "B4" format and return corresponding square
+    // Provide coordinate in "B4" format and return corresponding square object (not component)
     let getSquareObjectFromCoordinate = (coordinate) => {
       let toReturn = "Fail"
       squaresToBuild.map((x, xIndex) => {
@@ -236,16 +236,16 @@ class Square extends React.Component {
       };
     }
     
-    // Move a piece from origin to destination
+    // Move the piece on origin to destination
     updateSquare = (origin, destination) => {
       const originSquare      = getSquareObjectFromCoordinate(origin);
       const destinationSquare = getSquareObjectFromCoordinate(destination);
       const piece = originSquare.piece;
       originSquare.piece = empty;
       destinationSquare.piece = piece; 
-      this.setState({
-        squaresArray: squaresToBuild
-      })
+      // this.setState({
+      //   squaresArray: squaresToBuild
+      // })
     }
 
     setSelecting = (value) => {
@@ -260,7 +260,8 @@ class Square extends React.Component {
 
     
     setSelectedSquare = (coordinate) => {
-      console.log("Setting square to: " + getSquareObjectFromCoordinate(coordinate))
+      const square = getSquareObjectFromCoordinate(coordinate)
+      console.log("Selecting the " +square.piece.name + " on " + square.key)
       this.setState({
         selectedSquare: getSquareObjectFromCoordinate(coordinate)
       })
@@ -278,13 +279,13 @@ class Square extends React.Component {
     render() {
       
       return (
-        <div>
+        <div key={"innerDiv"}>
           <ol key = {"selecting"}>{this.state.selecting ? "Selecting" : "Moving"}</ol>
           <ol key = {"selectedPiece"}>{this.state.selectedSquare ? this.state.selectedSquare.piece.name + " at " + this.state.selectedSquare.key : "No Piece Selected"}</ol>
           
-          {this.state.squaresArray.map((x) => {
+          {this.state.squaresArray.map((x, index) => {
             return (
-              <div>
+              <div key={"outerDiv" + index}>
                 {x.map((y) => {
                   return (
                     <Square
