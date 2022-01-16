@@ -4,19 +4,6 @@ import './index.css';
 import Board from './Components/Board/Board.js'
 
 
-
-
-
-
-
-
-    
-  
-    
-   
-
-    
-  
   class Game extends React.Component {
     render() {
       return (
