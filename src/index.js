@@ -14,10 +14,9 @@ import Board from './Components/Board/Board.js'
     }
   }
   
-  // ========================================
   
   ReactDOM.render(
-    <Game />,
+      <Game />,
     document.getElementById('root')
   );
   

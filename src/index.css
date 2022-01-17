@@ -7,6 +7,9 @@ ol, ul {
   padding-left: 30px;
 }
 
+.board {
+}
+
 .board-row:after {
   clear: both;
   content: "";
@@ -43,6 +46,10 @@ ol, ul {
 .game {
   display: flex;
   flex-direction: row;
+  background-color: darkslategrey;
+  align-items: 'center';
+  justify-content: 'center';
+  height:80vh;
 }
 
 .game-info {
@@ -53,3 +60,13 @@ img {
   height: 64px;
   width: 64px;
 }
+
+/* .game {
+  background-color: darkslategrey;
+  text-align: center;
+  display: 'flex';
+  flex-direction: row;
+  align-items: 'center';
+  justify-content: 'center';
+  height:80vh;
+} */
