@@ -16,12 +16,12 @@ class Square extends React.Component {
             // If "selecting", set selecting to false and set selected to the clicked square's piece
             if (this.props.getSelecting()) {
               console.log("Picking up the %s on %s", this.props.p.name, name);
-              this.props.setcurrentAvailableMoves(this.props.getValidMoves(this.props.p, this.props.getIndicesFromCoordinate(name)))
+              this.props.setcurrentAvailableMoves(this.props.getLegalMoves(this.props.p, this.props.getIndicesFromCoordinate(name)))
               this.props.setSelectedSquare(name)
               this.props.setSelecting(false)
               // This should be set to show "this.props.getcurrentAvailableMoves", but it is not set in time
               // TODO add async functions
-              console.log("Available moves: " + this.props.getValidMoves(this.props.p, this.props.getIndicesFromCoordinate(name)))
+              console.log("Available moves: " + this.props.getLegalMoves(this.props.p, this.props.getIndicesFromCoordinate(name)))
               
             } else {
               console.log("Trying to place on " + name)
