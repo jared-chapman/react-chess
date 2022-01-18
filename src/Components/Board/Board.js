@@ -4,8 +4,6 @@ import {pawnB, pawnW, knightB, knightW, bishopB, bishopW, rookB, rookW, queenB, 
 
 const letters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']
 
-
-
 const startingPiecePositions = [[rookB,   knightB,   bishopB,    queenB,    kingB, bishopB,   knightB,     rookB],
                                 [pawnB,     pawnB,     pawnB,     pawnB,    pawnB,   pawnB,     pawnB,     pawnB],
                                 [empty,     empty,     empty,     empty,    empty,   empty,     empty,     empty],
@@ -126,15 +124,57 @@ class Board extends React.Component {
     // This ignores things like blocking pieces, check, pins, etc.
   getLegalMoves = (piece, position) => {
     const deltas = piece.positionDeltas;
-    let toReturn = [];
+
+    // Create "Rays" of movement
+    let moveRays = [];
     deltas.map((x) => {
-      if ([position[0] + x[0]] > 0 && 
-          [position[0] + x[0]] < 9 &&
-          [position[1] + x[1]] > 0 && 
-          [position[1] + x[1]] < 9){
-        toReturn.push([letters[position[0] + x[0] -1]].toString() + [position[1] + x[1]].toString());
-        }
-    });
+      let ray = [];
+      x.map((y) => {
+        ray.push([y[0] + position[0], y[1] + position[1]])
+      })
+      moveRays.push(ray)
+    })
+    
+    let toReturn = [];
+    for (let i = 0; i < moveRays.length; i++) {
+      for (let j = 0; j < moveRays[i].length; j++) {
+        const checkingOn = moveRays[i][j];
+        
+        if (checkingOn[0] < 9 && 
+            checkingOn[0] > 0 && 
+            checkingOn[1] < 9 &&
+            checkingOn[1] > 0)  {
+              const checkingOnName = letters[checkingOn[0]-1] + checkingOn[1].toString();
+              const checkingOnPiece = getSquareObjectFromCoordinate(checkingOnName).piece;
+              if (checkingOnPiece.name != "Empty Square") {
+                if (checkingOnPiece.isWhite == piece.isWhite){
+                  // Code if square to check contains a matching piece
+                  // console.log(checkingOnName + " Contaings a matching piece") 
+                  break;
+                } else {
+                  // Code if square to check contains a piece of a different color
+                  //console.log(checkingOnName + " Contains a piece of a different color")
+                  toReturn.push(checkingOnName);
+                  break;
+                }
+              } else {
+                // Code if square does not have a piece
+                //console.log(checkingOnName + " Contains an empty square")
+                toReturn.push(checkingOnName)
+              }
+            }
+      }
+    }
+
+    
+    // moveRays.map((x) => {
+    //   if ([position[0] + x[0]] > 0 && 
+    //       [position[0] + x[0]] < 9 &&
+    //       [position[1] + x[1]] > 0 && 
+    //       [position[1] + x[1]] < 9){
+    //     toReturn.push([letters[position[0] + x[0] -1]].toString() + [position[1] + x[1]].toString());
+    //     }
+    // });
     // console.log(toReturn)
     return toReturn;
   }
