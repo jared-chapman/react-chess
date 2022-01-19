@@ -58,11 +58,6 @@ let getSquareObjectFromCoordinate = (coordinate) => {
 }
 
 
-
-
-
-
-
 class Board extends React.Component {
   constructor(props) {
     super(props);
@@ -120,8 +115,7 @@ class Board extends React.Component {
     return this.state.selectedSquare
   }
 
-    // Provide a piece and position, return the available squares
-    // This ignores things like blocking pieces, check, pins, etc.
+  // Provide a piece and position, return the available squares
   getLegalMoves = (piece, position) => {
     const deltas = piece.positionDeltas;
 
@@ -141,11 +135,18 @@ class Board extends React.Component {
         const checkingOn = moveRays[i][j];
         
         if (checkingOn[0] < 9 && 
-            checkingOn[0] > 0 && 
-            checkingOn[1] < 9 &&
-            checkingOn[1] > 0)  {
-              const checkingOnName = letters[checkingOn[0]-1] + checkingOn[1].toString();
-              const checkingOnPiece = getSquareObjectFromCoordinate(checkingOnName).piece;
+          checkingOn[0] > 0 && 
+          checkingOn[1] < 9 &&
+          checkingOn[1] > 0)  {
+            const checkingOnName = letters[checkingOn[0]-1] + checkingOn[1].toString();
+            const checkingOnPiece = getSquareObjectFromCoordinate(checkingOnName).piece;
+            // Special pawn logic
+            // if (checkingOnPiece.name == "Pawn") {
+            //   if (checkingOnPiece.isWhite && checkingOn[1] == 2) {
+            //     toReturn.push()
+            //   }
+            // } else {
+              // Non-pawn logic
               if (checkingOnPiece.name != "Empty Square") {
                 if (checkingOnPiece.isWhite == piece.isWhite){
                   // Code if square to check contains a matching piece
@@ -163,21 +164,11 @@ class Board extends React.Component {
                 toReturn.push(checkingOnName)
               }
             }
-      }
+          }
+        }
+      //}
+      return toReturn;
     }
-
-    
-    // moveRays.map((x) => {
-    //   if ([position[0] + x[0]] > 0 && 
-    //       [position[0] + x[0]] < 9 &&
-    //       [position[1] + x[1]] > 0 && 
-    //       [position[1] + x[1]] < 9){
-    //     toReturn.push([letters[position[0] + x[0] -1]].toString() + [position[1] + x[1]].toString());
-    //     }
-    // });
-    // console.log(toReturn)
-    return toReturn;
-  }
 
   // Provide list of valid moves ( ["B4", "C3"] format) and selected position ( "B4" format) and return if move is valid or not
   checkIfValidMove = ((validMoves, proposedMove) => {

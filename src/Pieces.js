@@ -372,27 +372,27 @@ const pawnB = {
     name: "King",
     isWhite: 0,
     image: blackKing,
-    positionDeltas: [[-1, -1],
-                     [-1, 0],
-                     [-1, 1],
-                     [0, -1],
-                     [0, 1],
-                     [1,-1],
-                     [1, 0],
-                     [1, 1]]
+    positionDeltas: [[[-1, -1]],
+                     [[-1, 0]],
+                     [[-1, 1]],
+                     [[0, -1]],
+                     [[0, 1]],
+                     [[1,-1]],
+                     [[1, 0]],
+                     [[1, 1]]]
   }
   const kingW = {
     name: "King",
     isWhite: 1,
     image: whiteKing,
-    positionDeltas: [[-1, -1],
-                     [-1, 0],
-                     [-1, 1],
-                     [0, -1],
-                     [0, 1],
-                     [1,-1],
-                     [1, 0],
-                     [1, 1]]
+    positionDeltas: [[[-1, -1]],
+    [[-1, 0]],
+    [[-1, 1]],
+    [[0, -1]],
+    [[0, 1]],
+    [[1,-1]],
+    [[1, 0]],
+    [[1, 1]]]
   }
   const empty = {
     name: "Empty Square",
