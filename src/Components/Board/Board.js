@@ -1,6 +1,6 @@
 import React from 'react';
 import Square from '../Square/Square.js'
-import {pawnB, pawnW, knightB, knightW, bishopB, bishopW, rookB, rookW, queenB, queenW, kingB, kingW, empty} from './../../Pieces.js'
+import {pawnB, pawnW, knightB, knightW, bishopB, bishopW, rookB, rookW, queenB, queenW, kingB, kingW, empty, enPassantB, enPassantW} from './../../Pieces.js'
 
 const letters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']
 
@@ -58,6 +58,8 @@ let getSquareObjectFromCoordinate = (coordinate) => {
 }
 
 
+
+
 class Board extends React.Component {
   constructor(props) {
     super(props);
@@ -65,17 +67,218 @@ class Board extends React.Component {
       squaresArray: squaresToBuild,
       selecting: true, 
       selectedSquare: null,
-      currentAvailableMoves: []
+      currentAvailableMoves: [],
+      canCastle: [1, 1, 1, 1] // clockwise from top left
     };
   }
     
-  // Move the piece on origin to destination
+  // Move the piece on origin to destination. 
+  // Handles removing piece captured by en passant
   updateSquare = (origin, destination) => {
     const originSquare      = getSquareObjectFromCoordinate(origin);
     const destinationSquare = getSquareObjectFromCoordinate(destination);
     const piece = originSquare.piece;
-    originSquare.piece = empty;
-    destinationSquare.piece = piece; 
+    // This just copies the origin square to squareToKill, which ALWAYS gets cleared on a move anyway
+    // If en passant, updates it to the pawn that is getting captured
+    let squareToKill = getSquareObjectFromCoordinate(origin);
+    if (destinationSquare.piece.name == "enPassant") {
+      const destinationCoordinate = this.getCRFromCoordinate(destination)
+      let rToKill = originSquare.row;
+      let cToKill = destinationCoordinate[0]+1;
+      let coordinateToKill = this.getCoordinateFromCR(cToKill, rToKill);
+      squareToKill = getSquareObjectFromCoordinate(coordinateToKill);
+    }
+
+    // Castling
+    // This can definitely be cleaned up
+    if (piece.name == "King" && originSquare.key == "E8" && destinationSquare.key == "C8" && this.state.canCastle[0]) {
+      let squares = this.state.squaresArray
+      squares.forEach((row,) => {
+        let newRow = [];
+        row.forEach((square,) => {
+          newRow.push(square)
+          if (square.key == "C8") {
+            square.piece = kingB;
+          }
+          if (square.key == "E8") {
+            square.piece = empty;
+          }
+          if (square.key == "D8") {
+            square.piece = rookB;
+          }
+          if (square.key == "A8") {
+            square.piece = empty;
+          }
+        })
+      })
+      this.setState({
+        squaresArray: squares
+      })
+  }
+
+    if (piece.name == "King" && originSquare.key == "E8" && destinationSquare.key == "G8" && this.state.canCastle[1]) {
+      let squares = this.state.squaresArray
+      squares.forEach((row,) => {
+        let newRow = [];
+        row.forEach((square,) => {
+          newRow.push(square)
+          if (square.key == "G8") {
+            square.piece = kingB;
+          }
+          if (square.key == "E8") {
+            square.piece = empty;
+          }
+          if (square.key == "F8") {
+            square.piece = rookB;
+          }
+          if (square.key == "H8") {
+            square.piece = empty;
+          }
+        })
+      })
+      this.setState({
+        squaresArray: squares
+      })
+  }
+
+    if (piece.name == "King" && originSquare.key == "E1" && destinationSquare.key == "G1" && this.state.canCastle[2]) {
+      let squares = this.state.squaresArray
+      squares.forEach((row,) => {
+        let newRow = [];
+        row.forEach((square,) => {
+          newRow.push(square)
+          if (square.key == "G1") {
+            square.piece = kingW;
+          }
+          if (square.key == "E1") {
+            square.piece = empty;
+          }
+          if (square.key == "F1") {
+            square.piece = rookW;
+          }
+          if (square.key == "H1") {
+            square.piece = empty;
+          }
+        })
+      })
+      this.setState({
+        squaresArray: squares
+      })
+  }
+
+    if (piece.name == "King" && originSquare.key == "E1" && destinationSquare.key == "C1" && this.state.canCastle[3]) {
+      let squares = this.state.squaresArray
+      squares.forEach((row,) => {
+        let newRow = [];
+        row.forEach((square,) => {
+          newRow.push(square)
+          if (square.key == "C1") {
+            square.piece = kingW;
+          }
+          if (square.key == "E1") {
+            square.piece = empty;
+          }
+          if (square.key == "D1") {
+            square.piece = rookW;
+          }
+          if (square.key == "A1") {
+            square.piece = empty;
+          }
+        })
+      })
+      this.setState({
+        squaresArray: squares
+      })
+  }
+
+    // Remove ability to castle
+    // This may be a cleaner way to do this :shrug:
+    if (originSquare.key == "A8") {
+      this.setState({
+        canCastle: [0, this.state.canCastle[1], this.state.canCastle[2], this.state.canCastle[3]]
+      })
+    }
+    if (originSquare.key == "H8") {
+      this.setState({
+        canCastle: [this.state.canCastle[0], 0, this.state.canCastle[2], this.state.canCastle[3]]
+      })
+    }
+    if (originSquare.key == "H1") {
+      this.setState({
+        canCastle: [this.state.canCastle[0], this.state.canCastle[1], 0, this.state.canCastle[3]]
+      })
+    }
+    if (originSquare.key == "A1") {
+      this.setState({
+        canCastle: [this.state.canCastle[0], this.state.canCastle[1], this.state.canCastle[2], 0]
+      })
+    }
+    if (originSquare.key == "E8") {
+      this.setState({
+        canCastle: [0, 0, this.state.canCastle[2], this.state.canCastle[3]]
+      })
+    }
+    if (originSquare.key == "E1") {
+      this.setState({
+        canCastle: [this.state.canCastle[0], this.state.canCastle[1], 0, 0]
+      })
+    }
+    console.log(this.state.canCastle)
+
+
+    // This is the normal movement loop for non-enPassant and non-castling moves
+    let squares = this.state.squaresArray
+    squares.forEach((row,) => {
+      let newRow = [];
+      row.forEach((square,) => {
+        newRow.push(square)
+        if (square.key == originSquare.key || square.key == squareToKill.key) {
+          square.piece = empty;
+        }
+        if (square.key == destinationSquare.key) {
+          square.piece = piece;
+        }
+      })
+    })
+    this.setState({
+      squaresArray: squares
+    })
+  }
+
+  placeEnPassant = (coordinate, isWhite) => {
+    const square = getSquareObjectFromCoordinate(coordinate)
+    isWhite ? square.piece = enPassantW : square.piece = enPassantB;
+  }
+
+  clearEnPassant = (isWhite) => {
+    let squares = this.state.squaresArray
+    squares.forEach((row, indexA) => {
+      let newRow = [];
+      row.forEach((square, indexB) => {
+        newRow.push(square)
+        if (square.piece.isWhite == isWhite && (square.piece.name == "enPassant")) {
+          console.log("clearing en passant")
+          square.piece = empty;
+        }
+      })
+    })
+    this.setState({
+      squaresArray: squares
+    })
+  }
+
+  // Pass col and row (2, 2) and return B2 format
+  getCoordinateFromCR = (col, row) => {
+    return letters[col-1] + (row).toString()
+  }
+
+  // Pass coordinate in B2 format and return col and row (2, 2)
+  getCRFromCoordinate = (coordinate) => {
+    const row = letters.indexOf(coordinate[0]);
+    const col = coordinate[1];
+    const CR = [row, col]
+    console.log(CR);
+    return CR;
   }
 
   setSelecting = (value) => {
@@ -117,9 +320,23 @@ class Board extends React.Component {
 
   // Provide a piece and position, return the available squares
   getLegalMoves = (piece, position) => {
-    const deltas = piece.positionDeltas;
+    let deltas = piece.positionDeltas;
+    // Pawn Logic for 4th rank movement on first move only
+    // Remove second positionDelta from pawn if it's not on the 2nd (or 7th) rank
+    if (piece.name === "Pawn" && piece.isWhite && position[1] != 2) {
+      deltas = [[[0, 1]],
+                [[1, 1]],
+                [[-1, 1]]]
+    } else {
+      if (piece.name === "Pawn" && !piece.isWhite && position[1] != 7) {
+        deltas = [[[0, -1]],
+                    [[1, -1]],
+                    [[-1, -1]]]
+      }
+    }    
 
     // Create "Rays" of movement
+    // This is so pieces can't move "through" other pieces
     let moveRays = [];
     deltas.map((x) => {
       let ray = [];
@@ -134,39 +351,64 @@ class Board extends React.Component {
       for (let j = 0; j < moveRays[i].length; j++) {
         const checkingOn = moveRays[i][j];
         
+        // Make sure we're only looking at squares within the bounds of the board
         if (checkingOn[0] < 9 && 
           checkingOn[0] > 0 && 
           checkingOn[1] < 9 &&
           checkingOn[1] > 0)  {
             const checkingOnName = letters[checkingOn[0]-1] + checkingOn[1].toString();
             const checkingOnPiece = getSquareObjectFromCoordinate(checkingOnName).piece;
-            // Special pawn logic
-            // if (checkingOnPiece.name == "Pawn") {
-            //   if (checkingOnPiece.isWhite && checkingOn[1] == 2) {
-            //     toReturn.push()
-            //   }
-            // } else {
-              // Non-pawn logic
+
               if (checkingOnPiece.name != "Empty Square") {
                 if (checkingOnPiece.isWhite == piece.isWhite){
                   // Code if square to check contains a matching piece
-                  // console.log(checkingOnName + " Contaings a matching piece") 
                   break;
                 } else {
                   // Code if square to check contains a piece of a different color
-                  //console.log(checkingOnName + " Contains a piece of a different color")
-                  toReturn.push(checkingOnName);
-                  break;
+                  // console.log(`checkingOn[0]: ${checkingOn[0]}  position[0]: ${position[0]}`)
+                  if (piece.name === "Pawn"){
+                    // Don't let a pawn capture unless it's diagonally
+                    if (checkingOn[0] === position[0]) {
+                     break;
+                    } else {
+                      toReturn.push(checkingOnName);
+                    }
+                  } else {
+                    toReturn.push(checkingOnName);
+                    break;
+                  }
                 }
-              } else {
+              } else { 
                 // Code if square does not have a piece
-                //console.log(checkingOnName + " Contains an empty square")
-                toReturn.push(checkingOnName)
-              }
+                // Don't let pawn move diagonally unless square contains a piece of a different color
+                if (piece.name === "Pawn" && position[0] != checkingOn[0]) {
+                  break;
+
+                // Castling
+                } 
+                if (piece.name === "King" && !piece.isWhite) {
+                  console.log(`this.state.canCastle[0] ${this.state.canCastle[0]}  B8 piece ${getSquareObjectFromCoordinate("B8").piece.name}  C8 piece ${getSquareObjectFromCoordinate("C8").piece.name}   D8 piece ${getSquareObjectFromCoordinate("D8").piece.name}   `) 
+                  if (this.state.canCastle[0] && getSquareObjectFromCoordinate("B8").piece.name == "Empty Square" && getSquareObjectFromCoordinate("C8").piece.name == "Empty Square" && getSquareObjectFromCoordinate("D8").piece.name == "Empty Square") {
+                    toReturn.push("C8")
+                  }
+                  if (this.state.canCastle[1] && getSquareObjectFromCoordinate("F8").piece.name == "Empty Square" && getSquareObjectFromCoordinate("G8").piece.name == "Empty Square") {
+                    toReturn.push("G8")
+                  }
+                }
+                if (piece.name === "King" && piece.isWhite) {
+                  if (this.state.canCastle[2] && getSquareObjectFromCoordinate("F1").piece.name == "Empty Square" && getSquareObjectFromCoordinate("G1").piece.name == "Empty Square") {
+                    toReturn.push("G1")
+                  }
+                  if (this.state.canCastle[3] && getSquareObjectFromCoordinate("B1").piece.name == "Empty Square" && getSquareObjectFromCoordinate("C1").piece.name == "Empty Square" && getSquareObjectFromCoordinate("D1").piece.name == "Empty Square") {
+                    toReturn.push("C1")
+                  }
+                }
+                  toReturn.push(checkingOnName)
+              
+              } 
             }
           }
         }
-      //}
       return toReturn;
     }
 
@@ -201,9 +443,6 @@ class Board extends React.Component {
       
       return (
         <div key={"innerDiv"} className={"Board"}>
-          <ol key = {"selecting"}>{this.state.selecting ? "Selecting" : "Moving"}</ol>
-          <ol key = {"selectedPiece"}>{this.state.selectedSquare ? this.state.selectedSquare.piece.name + " at " + this.state.selectedSquare.key : "No Piece Selected"}</ol>
-          
           {this.state.squaresArray.map((x, index) => {
             return (
               <div key={"outerDiv" + index}>
@@ -228,6 +467,11 @@ class Board extends React.Component {
                       getIndicesFromCoordinate = {this.getIndicesFromCoordinate}
                       setcurrentAvailableMoves = {this.setcurrentAvailableMoves}
                       getcurrentAvailableMoves = {this.getcurrentAvailableMoves}
+                      getCoordinateFromCR = {this.getCoordinateFromCR}
+                      placeEnPassant = {this.placeEnPassant}
+                      clearEnPassant = {this.clearEnPassant}
+                      updateTurn = {this.props.updateTurn}
+                      getTurn = {this.props.getTurn}
                     />
                   )
                 })}
